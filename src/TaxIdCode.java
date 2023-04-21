@@ -4,17 +4,67 @@ public class TaxIdCode {
     private String code;
     private final static HashMap<Character, Integer> monthMap = new HashMap<>(Map.of('B', 28,
             'D', 30, 'H', 30,'P', 30, 'S', 30));
-    private final static ArrayList<Character> monthMapReverse = (ArrayList<Character>) Arrays.asList(
-        'A', 'B', 'C', 'D', 'E', 'H', 'L', 'M', 'P', 'R', 'S', 'T');
+    private final static ArrayList<Character> monthMapReverse = new ArrayList<>(Arrays.asList(
+        'A', 'B', 'C', 'D', 'E', 'H', 'L', 'M', 'P', 'R', 'S', 'T'));
+    private final static HashMap<Character, Integer> oddCharacters = new HashMap<>() {{
+        put('0', 1);
+        put('1', 0);
+        put('2', 5);
+        put('3', 7);
+        put('4', 9);
+        put('5', 13);
+        put('6', 15);
+        put('7', 17);
+        put('8', 19);
+        put('9', 21);
+        put('A', 1);
+        put('B', 0);
+        put('C', 5);
+        put('D', 7);
+        put('E', 9);
+        put('F', 13);
+        put('G', 15);
+        put('H', 17);
+        put('I', 19);
+        put('J', 21);
+        put('K', 2);
+        put('L', 4);
+        put('M', 18);
+        put('N', 20);
+        put('O', 11);
+        put('P', 3);
+        put('Q', 6);
+        put('R', 8);
+        put('S', 12);
+        put('T', 14);
+        put('U', 16);
+        put('V', 10);
+        put('W', 22);
+        put('X', 25);
+        put('Y', 24);
+        put('Z', 23);
+    }};
 
-    public TaxIdCode(String name, String surname, Calendar date, Sex sex) {
+    public TaxIdCode(String code) {
+        this.code = code;
+    }
+
+    /**
+     * Generate Tax Id Code
+     * @param name string
+     * @param surname string
+     * @param date calendar date with birthday
+     * @param sex Enum class
+     * @param cities name of birthplace
+     */
+    public TaxIdCode(String name, String surname, Calendar date, Sex sex, String cities) {
         StringBuilder generatedCode = new StringBuilder();
         // Adding name and surname chars
         generatedCode.append(nameChar(name));
         generatedCode.append(nameChar(surname));
 
         // Adding birth year and month
-        generatedCode.append(date.get(Calendar.YEAR) % 100);
+        generatedCode.append(String.format("%02d", date.get(Calendar.YEAR) % 100));
         generatedCode.append(monthMapReverse.get(date.get(Calendar.MONTH)));
 
         // Adding birthday and sex
@@ -23,7 +73,9 @@ public class TaxIdCode {
         } else {
             generatedCode.append(date.get(Calendar.DAY_OF_MONTH) + 40);
         }
-
+        // Adding cities code
+        generatedCode.append(TaxIdCodeXml.getMunicipalityCodeByName(cities));
+        generatedCode.append(checkChar(generatedCode.toString()));
         this.code = generatedCode.toString();
     }
 
@@ -38,7 +90,7 @@ public class TaxIdCode {
 
         // Adding consonants and returning if length > 3
         for (int i = 0; i < name.length(); i++) {
-            if (name.substring(i, i + 1).matches("A-Z&&[^AEIOU]")) {
+            if (name.substring(i, i + 1).matches("[A-Z&&[^AEIOU]]")) {
                 characters.append(name.charAt(i));
             }
             if (characters.length() > 2) {
@@ -64,6 +116,24 @@ public class TaxIdCode {
         return characters.toString();
     }
 
+    /**
+     * Generate final check character
+     * @param generatedCode first 15 chars in Tax id code
+     * @return check character
+     */
+    public char checkChar(String generatedCode) {
+        int sum = 0;
+        for (int i = 0; i < generatedCode.length(); i++) {
+            if (i % 2 == 1) {
+                sum += ((generatedCode.substring(i, i + 1).matches("[0-9]+"))? Character.getNumericValue(generatedCode.charAt(i)) : ((int)generatedCode.charAt(i)) % 65);
+            } else {
+                sum += oddCharacters.get(generatedCode.charAt(i));
+            }
+            System.out.println(sum);
+        }
+        return (char)(65 + sum % 26);
+    }
+
     public boolean isValid() {
 
         // Check characters in right positions and month characters
@@ -85,5 +155,7 @@ public class TaxIdCode {
         return true;
     }
 
-
+    public String toString() {
+        return "Code " + code;
+    }
 }

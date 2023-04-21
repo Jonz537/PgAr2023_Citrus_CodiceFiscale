@@ -1,12 +1,13 @@
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class Main {
 
-    ArrayList<Person> people = new ArrayList<>();
-    ArrayList<TaxIdCode> taxIdCodes = new ArrayList<>();
-    ArrayList<Municipality> municipalities = new ArrayList<>();
-
+    static ArrayList<TaxIdCode> readTaxIdCodes = new ArrayList<>(); 
+    
     public static void main(String[] args) {
-
+//        XmlUtils.readTaxIdCodesXml();
+        TaxIdCodeXml.xml();
     }
 }

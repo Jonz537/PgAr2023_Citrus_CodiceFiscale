@@ -1,5 +1,4 @@
 import java.util.Calendar;
-import java.util.Date;
 
 public class Person {
 
@@ -7,10 +6,10 @@ public class Person {
     private String surname;
     private Calendar birthDate; //gaySpawned
     private Sex sex;
-    private Municipality municipality;
+    private String municipality;
     private String taxIdCode;
 
-    public Person(String name, String surname, Calendar birthDate, Sex sex, Municipality municipality) {
+    public Person(String name, String surname, Calendar birthDate, Sex sex, String municipality) {
         this.name = name;
         this.surname = surname;
         this.birthDate = birthDate;
@@ -18,4 +17,27 @@ public class Person {
         this.municipality = municipality;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public Calendar getBirthDate() {
+        return birthDate;
+    }
+
+    public Sex getSex() {
+        return sex;
+    }
+
+    public String getMunicipality() {
+        return municipality;
+    }
+
+    public String getTaxIdCode() {
+        return taxIdCode;
+    }
 }
