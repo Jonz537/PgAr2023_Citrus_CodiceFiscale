@@ -9,6 +9,21 @@ public class XmlUtils {
     XMLOutputFactory xmlOf = null;
     XMLStreamWriter xmlW = null;
 
+    public void readTaxIdCodeXml() {
+
+        String filename = "./CodiciFiscali";
+
+        try {
+            xmlIf = XMLInputFactory.newInstance();
+            xmlR = xmlIf.createXMLStreamReader(filename, new FileInputStream(filename));
+        } catch (Exception e) {
+            System.out.println("Errore nell'inizializzazione del reader:");
+            System.out.println(e.getMessage());
+        }
+
+        
+    }
+
 //    public void readFileXml(String filename) {
 //
 //        try {

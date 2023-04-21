@@ -4,6 +4,7 @@ public class Main {
 
     ArrayList<Person> people = new ArrayList<>();
     ArrayList<TaxIdCode> taxIdCodes = new ArrayList<>();
+    ArrayList<Municipality> municipalities = new ArrayList<>();
 
     public static void main(String[] args) {
 
