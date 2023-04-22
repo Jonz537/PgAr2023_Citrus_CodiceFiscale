@@ -9,12 +9,11 @@ public class XmlUtils {
 
     private static XMLInputFactory xmlIf = null;
     private static XMLStreamReader xmlR = null;
-    private XMLOutputFactory xmlOf = null;
-    private XMLStreamWriter xmlW = null;
-
+    private static XMLOutputFactory xmlOf = null;
+    private static XMLStreamWriter xmlW = null;
 
     /**
-     * Initialize XMLInputFactory and XMLSreamReader
+     * Initialize XMLInputFactory and XMLStreamReader
      * @param filename xml file name
      */
     private static void initializeXMLReader(String filename) {
@@ -26,7 +25,35 @@ public class XmlUtils {
         }
     }
 
-    public static void readTaxIdCodesXml(ArrayList<TaxIdCode> readTaxIdCodes) {
+    /**
+     * read people from the file Inputpersone.xml
+     * @param people
+     */
+    public static void readPeople(ArrayList<Person> people) {
+
+        String filename = "./InputPersone.xml";
+        initializeXMLReader(filename);
+
+        try {
+            ArrayList<String> personData = new ArrayList<>();
+            while (xmlR.hasNext()) {
+                if (xmlR.getEventType() == XMLStreamConstants.CHARACTERS && xmlR.getText().trim().length() > 0) {
+                    personData.add(xmlR.getText());
+                }
+                if (personData.size() == 5) {
+                    people.add(new Person(personData));
+                    personData.clear();
+                }
+                xmlR.next();
+            }
+        } catch (XMLStreamException e) {
+            System.out.println("Reading error:\n" + e.getMessage());
+        }
+
+
+    }
+
+    public static void readTaxIdCodes(ArrayList<TaxIdCode> taxIdCodes) {
 
         String filename = "./CodiciFiscali.xml";
         String code = null;
@@ -37,7 +64,7 @@ public class XmlUtils {
             while (xmlR.hasNext()) {
                 if (xmlR.getEventType() == XMLStreamConstants.CHARACTERS && xmlR.getText().trim().length() > 0) {
                     code = xmlR.getText();
-                    readTaxIdCodes.add(new TaxIdCode(code));
+                    taxIdCodes.add(new TaxIdCode(code));
                 }
                 xmlR.next();
             }
@@ -46,7 +73,7 @@ public class XmlUtils {
         }
     }
 
-    public static void readCitiesXml(HashMap<String, String> cities) {
+    public static void readCities(HashMap<String, String> cities) {
 
         String filename = "./Comuni.xml";
         initializeXMLReader(filename);
@@ -70,118 +97,133 @@ public class XmlUtils {
         }
     }
 
-    public void readFileXml(String filename) {
-
-        try {
-            xmlIf = XMLInputFactory.newInstance();
-            xmlR = xmlIf.createXMLStreamReader(filename, new FileInputStream(filename));
-        } catch (Exception e) {
-            System.out.println("Errore nell'inizializzazione del reader:");
-            System.out.println(e.getMessage());
-        }
-
-        while (true) {
-            try {
-                if (!xmlR.hasNext()) break;
-            } catch (XMLStreamException e) {
-                throw new RuntimeException(e);
-            }
-            switch (xmlR.getEventType()) {
-                case XMLStreamConstants.START_DOCUMENT:
-                    System.out.println("Start Read Doc " + filename); break;
-                case XMLStreamConstants.START_ELEMENT:
-                    System.out.println("Tag " + xmlR.getLocalName());
-                    for (int i = 0; i < xmlR.getAttributeCount(); i++)
-                        System.out.printf(" => attributo %s->%s%n", xmlR.getAttributeLocalName(i), xmlR.getAttributeValue(i));
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    System.out.println("END-Tag " + xmlR.getLocalName()); break;
-                case XMLStreamConstants.COMMENT:
-                    System.out.println("// commento " + xmlR.getText()); break;
-                case XMLStreamConstants.CHARACTERS:
-                    if (xmlR.getText().trim().length() > 0)
-                        System.out.println("-> " + xmlR.getText());
-                    break;
-            }
-            try {
-                xmlR.next();
-            } catch (XMLStreamException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public void writeFileXml(String filename, Person[] people, TaxIdCode[] codes) {
-
+    /**
+     * Initialize XMLOutputFactory and XMLStreamWriter
+     * @param filename xml file name
+     */
+    private static void initializeWriterFileXml(String filename) {
         try {
             xmlOf = XMLOutputFactory.newInstance();
             xmlW = xmlOf.createXMLStreamWriter(new FileOutputStream(filename), "utf-8");
             xmlW.writeStartDocument("utf-8", "1.0");
         } catch (Exception e) {
-            System.out.println("Errore nell'inizializzazione del writer:");
-            System.out.println(e.getMessage());
+            System.out.println("Error\n" + e.getMessage());
+            System.out.println("Reading error:\n" + e.getMessage());
         }
+    }
+
+    /**
+     * write the final output file on xml
+     * @param people read in the file InputPersone.xml
+     * @param codes generated
+     */
+
+    public void writeFileXml(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
+
+        String filename = "./Output.xml";
+
+        initializeWriterFileXml(filename);
 
         try {
             xmlW.writeStartElement("output");
+
             xmlW.writeStartElement("persone");
-       //     xmlW.writeAttribute("id", );
-            for (Person person : people) {
-
-                xmlW.writeStartElement("persona");
-                xmlW.writeAttribute("number", String.valueOf(people.length));
-
-                xmlW.writeStartElement("nome");
-                xmlW.writeCharacters(person.getName());
-                xmlW.writeEndElement();
-
-                xmlW.writeStartElement("cognome");
-                xmlW.writeCharacters(person.getSurname());
-                xmlW.writeEndElement();
-
-                xmlW.writeStartElement("sesso");
-                xmlW.writeCharacters(String.valueOf(person.getSex()));
-                xmlW.writeEndElement();
-
-                xmlW.writeStartElement("comune_nascita");
-                xmlW.writeCharacters(person.getMunicipality());
-                xmlW.writeEndElement();
-
-                xmlW.writeStartElement("data_nascita");
-                xmlW.writeCharacters(String.valueOf(person.getBirthDate()));
-                xmlW.writeEndElement();
-
-                xmlW.writeStartElement("codice_fiscale");
-                xmlW.writeCharacters(person.getTaxIdCode());
-                xmlW.writeEndElement();
-
-                xmlW.writeEndElement();
-            }
-
+            xmlW.writeAttribute("numero", String.valueOf(people.size()));
+            writePeople(people);
             xmlW.writeEndElement();
+
             xmlW.writeStartElement("codici");
 
             xmlW.writeStartElement("invalidi");
       //      xmlW.writeAttribute("id", );
-            for (int i = 0; i < codes.length; i++) {
+            writeInvalidCodes(codes);
 
-                if (!codes[i].isValid()) {
-                    continue;
-                }
+            xmlW.writeEndElement();
 
-                xmlW.writeStartElement("codice");
-//                xmlW.writeCharacters();
-                xmlW.writeEndElement();
-            }
+            xmlW.writeStartElement("spaiati");
+
             xmlW.writeEndElement();
 
             xmlW.writeEndElement();
+
             xmlW.writeEndElement();
             xmlW.writeEndDocument();
             xmlW.flush();
             xmlW.close();
+
         } catch (Exception e) {
-            System.out.println("Errore nella scrittura");
+            System.out.println("Reading error:\n" + e.getMessage());
+        }
+    }
+
+    /** 
+     * write the people in the tag 'persone'
+     * @param people read in the file InputPersone.xml
+     */
+
+    private static void writePeople(ArrayList<Person> people) {
+
+        try{
+
+            for (int i = 0; i < people.size(); i++) {
+
+                xmlW.writeStartElement("persona");
+                xmlW.writeAttribute("id", Integer.toString(i));
+
+                xmlW.writeStartElement("nome");
+                xmlW.writeCharacters(people.get(i).getName());
+                xmlW.writeEndElement();
+
+                xmlW.writeStartElement("cognome");
+                xmlW.writeCharacters(people.get(i).getSurname());
+                xmlW.writeEndElement();
+
+                xmlW.writeStartElement("sesso");
+                xmlW.writeCharacters(String.valueOf(people.get(i).getSex()));
+                xmlW.writeEndElement();
+
+                xmlW.writeStartElement("comune_nascita");
+                xmlW.writeCharacters(people.get(i).getMunicipality());
+                xmlW.writeEndElement();
+
+                xmlW.writeStartElement("data_nascita");
+                xmlW.writeCharacters(String.valueOf(people.get(i).getBirthDate()));
+                xmlW.writeEndElement();
+
+                xmlW.writeStartElement("codice_fiscale");
+                xmlW.writeCharacters(people.get(i).getTaxIdCode());
+                xmlW.writeEndElement();
+
+                xmlW.writeEndElement();
+            }
+
+        } catch (Exception e) {
+            System.out.println("Reading error:\n" + e.getMessage());
+        }
+    }
+
+    /**
+     * write the invalid codes in the tag 'codici'
+     * @param codes generated
+     */
+
+    private static void writeInvalidCodes(ArrayList<TaxIdCode> codes) {
+
+        try {
+
+            for (int i = 0; i < codes.size(); i++) {
+
+                if (!codes.get(i).isValid()) {
+                    continue;
+                }
+
+                xmlW.writeStartElement("codice");
+                xmlW.writeCharacters(codes.get(i).getCode());
+                xmlW.writeEndElement();
+            }
+
+        } catch (Exception e) {
+            System.out.println("Reading error:\n" + e.getMessage());
         }
     }
 }

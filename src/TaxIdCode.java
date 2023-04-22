@@ -74,7 +74,7 @@ public class TaxIdCode {
         generatedCode.append(monthMapReverse.get(date.get(Calendar.MONTH)));
 
         // Adding birthday and sex
-        if (sex.equals(Sex.MALE)) {
+        if (sex.equals(Sex.M)) {
             generatedCode.append(date.get(Calendar.DAY_OF_MONTH));
         } else {
             generatedCode.append(date.get(Calendar.DAY_OF_MONTH) + 40);
@@ -176,6 +176,10 @@ public class TaxIdCode {
         }
         // Return if valid
         return true;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public boolean equals(TaxIdCode object) {
