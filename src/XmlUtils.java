@@ -2,114 +2,71 @@ import javax.xml.stream.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 public class XmlUtils {
 
-    static XMLInputFactory xmlIf = null;
-    static XMLStreamReader xmlR = null;
-    XMLOutputFactory xmlOf = null;
-    XMLStreamWriter xmlW = null;
+    private static XMLInputFactory xmlIf = null;
+    private static XMLStreamReader xmlR = null;
+    private XMLOutputFactory xmlOf = null;
+    private XMLStreamWriter xmlW = null;
+
+
+    /**
+     * Initialize XMLInputFactory and XMLSreamReader
+     * @param filename xml file name
+     */
+    private static void initializeXMLReader(String filename) {
+        try {
+            xmlIf = XMLInputFactory.newInstance();
+            xmlR = xmlIf.createXMLStreamReader(filename, new FileInputStream(filename));
+        } catch (Exception e) {
+            System.out.println("Error in initializing XML stream reader:\n" + e.getMessage());
+        }
+    }
 
     public static void readTaxIdCodesXml(ArrayList<TaxIdCode> readTaxIdCodes) {
 
         String filename = "./CodiciFiscali.xml";
         String code = null;
 
+        initializeXMLReader(filename);
+
         try {
-            xmlIf = XMLInputFactory.newInstance();
-            xmlR = xmlIf.createXMLStreamReader(filename, new FileInputStream(filename));
-        } catch (Exception e) {
-            System.out.println("Errore nell'inizializzazione del reader:");
-            System.out.println(e.getMessage());
-        }
-
-        while (true) {
-            try {
-                if (!xmlR.hasNext()) break;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } // continua a leggere finché ha eventi a disposizione
-            //switch (xmlR.getEventType()) { // switch sul tipo di evento
-                //case XMLStreamConstants.START_DOCUMENT: // inizio del documento: stampa che inizia il documento
-                    //System.out.println("Start Read Doc " + filename);
-                //    break;
-                //case XMLStreamConstants.START_ELEMENT: // inizio di un elemento: stampa il nome del tag e i suoi attributi
-                    //System.out.println("Tag " + xmlR.getLocalName());
-                    //for (int i = 0; i < xmlR.getAttributeCount(); i++)
-                     //   System.out.printf(" => attributo %s->%s%n", xmlR.getAttributeLocalName(i), xmlR.getAttributeValue(i));
-                //    break;
-                //case XMLStreamConstants.END_ELEMENT: // fine di un elemento: stampa il nome del tag chiuso
-                    //System.out.println("END-Tag " + xmlR.getLocalName());
-                //  break;
-                //case XMLStreamConstants.COMMENT:
-                    //System.out.println("// commento " + xmlR.getText());
-                  //  break; // commento: ne stampa il contenuto
-                //case XMLStreamConstants.CHARACTERS: // content all’interno di un elemento: stampa il testo
-                    if (xmlR.getEventType() == XMLStreamConstants.CHARACTERS && xmlR.getText().trim().length() > 0) {// controlla se il testo non contiene solo spazi
-                        //System.out.println("-> " + xmlR.getText());
-                        code = xmlR.getText();
-                        readTaxIdCodes.add(new TaxIdCode(code));
-                    }
-
-                    //break;
-            //}
-            try {
+            while (xmlR.hasNext()) {
+                if (xmlR.getEventType() == XMLStreamConstants.CHARACTERS && xmlR.getText().trim().length() > 0) {
+                    code = xmlR.getText();
+                    readTaxIdCodes.add(new TaxIdCode(code));
+                }
                 xmlR.next();
-            } catch (XMLStreamException e) {
-                throw new RuntimeException(e);
             }
+        } catch (XMLStreamException e) {
+            System.out.println("Reading error:\n" + e.getMessage());
         }
-
-        //for (int i = 0; i < Main.readTaxIdCodes.size(); i++) {
-        //    System.out.println(Main.readTaxIdCodes.get(i).toString());
-        //}
     }
 
-    public void readCitiesXml() {
+    public static void readCitiesXml(HashMap<String, String> cities) {
+
         String filename = "./Comuni.xml";
-        City city = null;
+        initializeXMLReader(filename);
 
         try {
-            xmlIf = XMLInputFactory.newInstance();
-            xmlR = xmlIf.createXMLStreamReader(filename, new FileInputStream(filename));
-        } catch (Exception e) {
-            System.out.println("Errore nell'inizializzazione del reader:");
-            System.out.println(e.getMessage());
-        }
-
-        for (int i = 0; i < 1; i++) {
-            
-        }
-
-        while (true) {
-            try {
-                if (!xmlR.hasNext()) break;
-            } catch (XMLStreamException e) {
-                throw new RuntimeException(e);
-            }
-
-            switch (xmlR.getEventType()) {
-                //case XMLStreamConstants.START_DOCUMENT:
-                //    System.out.println("Start Read Doc " + filename); break;
-                case XMLStreamConstants.START_ELEMENT:
-                    System.out.println("Tag " + xmlR.getLocalName());
-                    for (int i = 0; i < xmlR.getAttributeCount(); i++)
-                        System.out.printf(" => attributo %s->%s%n", xmlR.getAttributeLocalName(i), xmlR.getAttributeValue(i));
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    System.out.println("END-Tag " + xmlR.getLocalName()); break;
-                //case XMLStreamConstants.COMMENT:
-                //    System.out.println("// commento " + xmlR.getText()); break;
-                case XMLStreamConstants.CHARACTERS:
-                    if (xmlR.getText().trim().length() > 0)
-                        System.out.println("-> " + xmlR.getText());
-                    break;
-            }
-            try {
+            while (xmlR.hasNext()) {
+                if (xmlR.getEventType() == XMLStreamConstants.CHARACTERS && xmlR.getText().trim().length() > 0) {
+                    String cityName = xmlR.getText();
+                    do {
+                        xmlR.next();
+                        if (xmlR.getEventType() == XMLStreamConstants.CHARACTERS && xmlR.getText().trim().length() > 0) {
+                            cities.put(cityName, xmlR.getText());
+                            break;
+                        }
+                    } while (xmlR.hasNext());
+                }
                 xmlR.next();
-            } catch (XMLStreamException e) {
-                throw new RuntimeException(e);
             }
+        } catch (XMLStreamException | NoSuchElementException e) {
+            System.out.println("Reading error:\n" + e.getMessage());
         }
     }
 

@@ -1,7 +1,9 @@
 import java.util.*;
 
 public class TaxIdCode {
+
     private String code;
+
     private final static HashMap<Character, Integer> monthMap = new HashMap<>() {{
         put('B', 28);
         put('D', 30);
@@ -61,7 +63,7 @@ public class TaxIdCode {
      * @param sex Enum class
      * @param city name of birthplace
      */
-    public TaxIdCode(String name, String surname, Calendar date, Sex sex, String city) {
+    public TaxIdCode(String surname, String name, Calendar date, Sex sex, String city) {
         StringBuilder generatedCode = new StringBuilder();
         // Adding name and surname chars
         generatedCode.append(nameChar(surname));
@@ -78,6 +80,9 @@ public class TaxIdCode {
             generatedCode.append(date.get(Calendar.DAY_OF_MONTH) + 40);
         }
         // Adding cities code
+        if (Main.getCitiesByName(city) == null) {
+            return;
+        }
         generatedCode.append(Main.getCitiesByName(city));
         generatedCode.append(checkChar(generatedCode.toString()));
         this.code = generatedCode.toString();
@@ -169,11 +174,18 @@ public class TaxIdCode {
         if (!(code.charAt(15) == checkChar(code.substring(0, 15)))) {
             return false;
         }
-
+        // Return if valid
         return true;
     }
 
+    public boolean equals(TaxIdCode object) {
+        return object.code.equals(code);
+    }
+
+    @Override
     public String toString() {
-        return "Code " + code;
+        return "TaxIdCode{" +
+                "code='" + code + '\'' +
+                '}';
     }
 }
