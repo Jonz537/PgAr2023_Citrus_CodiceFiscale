@@ -2,10 +2,13 @@ import java.util.*;
 
 public class TaxIdCode {
     private String code;
-    private final static HashMap<Character, Integer> monthMap = new HashMap<>(Map.of('B', 28,
-            'D', 30, 'H', 30,'P', 30, 'S', 30));
-    private final static ArrayList<Character> monthMapReverse = new ArrayList<>(Arrays.asList(
-        'A', 'B', 'C', 'D', 'E', 'H', 'L', 'M', 'P', 'R', 'S', 'T'));
+    private final static HashMap<Character, Integer> monthMap = new HashMap<>() {{
+        put('B', 28);
+        put('D', 30);
+        put('H', 30);
+        put('P', 30);
+        put('S', 30);
+    }};
     private final static HashMap<Character, Integer> oddCharacters = new HashMap<>() {{
         put('0', 1);
         put('1', 0);
@@ -44,6 +47,7 @@ public class TaxIdCode {
         put('Y', 24);
         put('Z', 23);
     }};
+    private final static ArrayList<Character> monthMapReverse = new ArrayList<>(Arrays.asList('A', 'B', 'C', 'D', 'E', 'H', 'L', 'M', 'P', 'R', 'S', 'T'));
 
     public TaxIdCode(String code) {
         this.code = code;
@@ -55,13 +59,13 @@ public class TaxIdCode {
      * @param surname string
      * @param date calendar date with birthday
      * @param sex Enum class
-     * @param cities name of birthplace
+     * @param city name of birthplace
      */
-    public TaxIdCode(String name, String surname, Calendar date, Sex sex, String cities) {
+    public TaxIdCode(String name, String surname, Calendar date, Sex sex, String city) {
         StringBuilder generatedCode = new StringBuilder();
         // Adding name and surname chars
-        generatedCode.append(nameChar(name));
         generatedCode.append(nameChar(surname));
+        generatedCode.append(nameChar(name));
 
         // Adding birth year and month
         generatedCode.append(String.format("%02d", date.get(Calendar.YEAR) % 100));
@@ -74,13 +78,13 @@ public class TaxIdCode {
             generatedCode.append(date.get(Calendar.DAY_OF_MONTH) + 40);
         }
         // Adding cities code
-        generatedCode.append(TaxIdCodeXml.getMunicipalityCodeByName(cities));
+        generatedCode.append(Main.getCitiesByName(city));
         generatedCode.append(checkChar(generatedCode.toString()));
         this.code = generatedCode.toString();
     }
 
     /**
-     * Give the first 3 + 3 characters for the tax Id Code
+     * Give the first 3 + 3 characters for the tax ID Code
      * @param name string with either name or surname
      * @return The generation of the name/surname of taxIdCode
      */
@@ -123,17 +127,25 @@ public class TaxIdCode {
      */
     public char checkChar(String generatedCode) {
         int sum = 0;
+
         for (int i = 0; i < generatedCode.length(); i++) {
+            // Check if digit is at and even (not index, normal people start counting from one)
             if (i % 2 == 1) {
-                sum += ((generatedCode.substring(i, i + 1).matches("[0-9]+"))? Character.getNumericValue(generatedCode.charAt(i)) : ((int)generatedCode.charAt(i)) % 65);
+                sum += ((generatedCode.substring(i, i + 1).matches("[0-9]+"))?
+                        Character.getNumericValue(generatedCode.charAt(i)) :
+                        ((int)generatedCode.charAt(i)) % 65);
             } else {
                 sum += oddCharacters.get(generatedCode.charAt(i));
             }
-            System.out.println(sum);
         }
-        return (char)(65 + sum % 26);
+
+        return (char)(65 + (sum % 26));
     }
 
+    /**
+     * Check function for validity of a Tax ID Code
+     * @return true if the Tax ID code is valid
+     */
     public boolean isValid() {
 
         // Check characters in right positions and month characters
@@ -142,16 +154,22 @@ public class TaxIdCode {
             return false;
         }
         // Check digits in right positions
-        if (code.substring(6, 8).matches("[0-9]+") && code.substring(9, 11).matches("[0-9]+") &&
-                code.substring(12, 15).matches("[0-9]+")) {
+        if (!(code.substring(6, 8).matches("[0-9]+") && code.substring(9, 11).matches("[0-9]+") &&
+                code.substring(12, 15).matches("[0-9]+"))) {
             return false;
         }
 
         // Check date
         int birthDay = Integer.parseInt(code.substring(9, 11)) % 40;
-        if (birthDay < 1 || birthDay > monthMap.getOrDefault(code.charAt(11), 31)) {
+        if (birthDay < 1 || birthDay > monthMap.getOrDefault(code.charAt(8), 31)) {
            return false;
         }
+
+        // Check last characters
+        if (!(code.charAt(15) == checkChar(code.substring(0, 15)))) {
+            return false;
+        }
+
         return true;
     }
 

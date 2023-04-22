@@ -1,6 +1,7 @@
 import javax.xml.stream.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 public class XmlUtils {
 
@@ -9,7 +10,7 @@ public class XmlUtils {
     XMLOutputFactory xmlOf = null;
     XMLStreamWriter xmlW = null;
 
-    public static void readTaxIdCodesXml() {
+    public static void readTaxIdCodesXml(ArrayList<TaxIdCode> readTaxIdCodes) {
 
         String filename = "./CodiciFiscali.xml";
         String code = null;
@@ -47,7 +48,7 @@ public class XmlUtils {
                     if (xmlR.getEventType() == XMLStreamConstants.CHARACTERS && xmlR.getText().trim().length() > 0) {// controlla se il testo non contiene solo spazi
                         //System.out.println("-> " + xmlR.getText());
                         code = xmlR.getText();
-                        Main.readTaxIdCodes.add(new TaxIdCode(code));
+                        readTaxIdCodes.add(new TaxIdCode(code));
                     }
 
                     //break;
