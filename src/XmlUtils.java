@@ -25,11 +25,17 @@ public class XmlUtils {
         }
     }
 
+    public static void readFile(ArrayList<Person> people, ArrayList<TaxIdCode> taxIdCodes, HashMap<String, String> cities) {
+        readCities(cities);
+        readTaxIdCodes(taxIdCodes);
+        readPeople(people);
+    }
+
     /**
      * read people from the file Inputpersone.xml
-     * @param people list of people
+     * @param people list of people to
      */
-    public static void readPeople(ArrayList<Person> people) {
+    private static void readPeople(ArrayList<Person> people) {
 
         String filename = "./InputPersone.xml";
         initializeXMLReader(filename);
@@ -51,7 +57,11 @@ public class XmlUtils {
         }
     }
 
-    public static void readTaxIdCodes(ArrayList<TaxIdCode> taxIdCodes) {
+    /**
+     * Initialize XMLOutputFactory and XMLStreamWriter
+     * @param taxIdCodes save input in this list
+     */
+    private static void readTaxIdCodes(ArrayList<TaxIdCode> taxIdCodes) {
 
         String filename = "./CodiciFiscali.xml";
         String code = null;
@@ -71,7 +81,11 @@ public class XmlUtils {
         }
     }
 
-    public static void readCities(HashMap<String, String> cities) {
+    /**
+     * Initialize XMLOutputFactory and XMLStreamWriter
+     * @param cities save input in this list
+     */
+    private static void readCities(HashMap<String, String> cities) {
 
         String filename = "./Comuni.xml";
         initializeXMLReader(filename);
@@ -97,7 +111,7 @@ public class XmlUtils {
 
     /**
      * Initialize XMLOutputFactory and XMLStreamWriter
-     * @param filename xml file name
+     * @param filename save input in this list
      */
     private static void initializeWriterFileXml(String filename) {
         try {
@@ -115,7 +129,7 @@ public class XmlUtils {
      * @param people read in the file InputPersone.xml
      * @param codes generated
      */
-    public static void writeFileXml(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
+    public static void writeFile(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
 
         String filename = "./Output.xml";
 
@@ -221,8 +235,8 @@ public class XmlUtils {
     }
 
     /**
-     * write the invalid codes in the tag 'codici'
-     * @param codes generated
+     * write the invalid codes in the tag 'invalidi'
+     * @param codes list of coeds
      */
     private static void writeInvalidCodes(ArrayList<TaxIdCode> codes) {
 
@@ -241,6 +255,10 @@ public class XmlUtils {
         }
     }
 
+    /**
+     * write the leftover codes in the tag  'spaiati'
+     * @param codes list of coeds
+     */
     private static void writeLeftOverCodes(ArrayList<TaxIdCode> codes) {
         try {
             for (TaxIdCode code : codes) {
