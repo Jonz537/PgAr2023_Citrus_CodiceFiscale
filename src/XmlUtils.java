@@ -27,7 +27,7 @@ public class XmlUtils {
 
     /**
      * read people from the file Inputpersone.xml
-     * @param people
+     * @param people list of people
      */
     public static void readPeople(ArrayList<Person> people) {
 
@@ -49,8 +49,6 @@ public class XmlUtils {
         } catch (XMLStreamException e) {
             System.out.println("Reading error:\n" + e.getMessage());
         }
-
-
     }
 
     public static void readTaxIdCodes(ArrayList<TaxIdCode> taxIdCodes) {
@@ -117,8 +115,7 @@ public class XmlUtils {
      * @param people read in the file InputPersone.xml
      * @param codes generated
      */
-
-    public void writeFileXml(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
+    public static void writeFileXml(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
 
         String filename = "./Output.xml";
 
@@ -126,10 +123,14 @@ public class XmlUtils {
 
         try {
             xmlW.writeStartElement("output");
+            xmlW.writeCharacters("\n\t");
 
             xmlW.writeStartElement("persone");
             xmlW.writeAttribute("numero", String.valueOf(people.size()));
+            xmlW.writeCharacters("\n\t");
+
             writePeople(people);
+
             xmlW.writeEndElement();
 
             xmlW.writeStartElement("codici");
@@ -164,37 +165,47 @@ public class XmlUtils {
     private static void writePeople(ArrayList<Person> people) {
 
         try{
-
-            for (int i = 0; i < people.size(); i++) {
+            int idCounter = 0;
+            for (Person person: people) {
 
                 xmlW.writeStartElement("persona");
-                xmlW.writeAttribute("id", Integer.toString(i));
+                xmlW.writeAttribute("id", Integer.toString(idCounter++));
 
+                xmlW.writeCharacters("\n\t\t");
                 xmlW.writeStartElement("nome");
-                xmlW.writeCharacters(people.get(i).getName());
+                xmlW.writeCharacters(person.getName());
                 xmlW.writeEndElement();
+                xmlW.writeCharacters("\n\t\t");
 
                 xmlW.writeStartElement("cognome");
-                xmlW.writeCharacters(people.get(i).getSurname());
+                xmlW.writeCharacters(person.getSurname());
                 xmlW.writeEndElement();
+                xmlW.writeCharacters("\n\t\t");
 
                 xmlW.writeStartElement("sesso");
-                xmlW.writeCharacters(String.valueOf(people.get(i).getSex()));
+                xmlW.writeCharacters(String.valueOf(person.getSex()));
                 xmlW.writeEndElement();
+                xmlW.writeCharacters("\n\t\t");
 
                 xmlW.writeStartElement("comune_nascita");
-                xmlW.writeCharacters(people.get(i).getMunicipality());
+                xmlW.writeCharacters(person.getCity());
                 xmlW.writeEndElement();
+                xmlW.writeCharacters("\n\t\t");
 
                 xmlW.writeStartElement("data_nascita");
-                xmlW.writeCharacters(String.valueOf(people.get(i).getBirthDate()));
+                xmlW.writeCharacters(person.getStringDate());
                 xmlW.writeEndElement();
+                xmlW.writeCharacters("\n\t\t");
 
                 xmlW.writeStartElement("codice_fiscale");
-                xmlW.writeCharacters(people.get(i).getTaxIdCode());
+                xmlW.writeCharacters("\n\t\t\t");
+                xmlW.writeCharacters(person.getTaxIdCodeIfValid());
+                xmlW.writeCharacters("\n\t\t");
                 xmlW.writeEndElement();
+                xmlW.writeCharacters("\n\t");
 
                 xmlW.writeEndElement();
+                xmlW.writeCharacters("\n\t");
             }
 
         } catch (Exception e) {
@@ -211,14 +222,14 @@ public class XmlUtils {
 
         try {
 
-            for (int i = 0; i < codes.size(); i++) {
+            for (TaxIdCode code : codes) {
 
-                if (!codes.get(i).isValid()) {
+                if (!code.isValid()) {
                     continue;
                 }
 
                 xmlW.writeStartElement("codice");
-                xmlW.writeCharacters(codes.get(i).getCode());
+                xmlW.writeCharacters(code.getCode());
                 xmlW.writeEndElement();
             }
 

@@ -33,6 +33,10 @@ public class Person {
         this.taxIdCode = new TaxIdCode(surname, name, birthDate, sex, city).getCode();
     }
 
+    public void isContainedInCodes() {
+
+    }
+
     public String getName() {
         return name;
     }
@@ -49,12 +53,16 @@ public class Person {
         return sex;
     }
 
-    public String getMunicipality() {
+    public String getCity() {
         return city;
     }
 
     public String getTaxIdCode() {
         return taxIdCode;
+    }
+
+    public String getStringDate() {
+        return birthDate.get(Calendar.YEAR)+ "-" + birthDate.get(Calendar.MONTH) + "-" + birthDate.get(Calendar.DAY_OF_MONTH);
     }
 
     @Override
@@ -68,5 +76,9 @@ public class Person {
                 ", city='" + city + '\'' +
                 ", taxIdCode='" + taxIdCode + '\'' +
                 '}';
+    }
+
+    public String getTaxIdCodeIfValid() {
+        return (Main.isContained(taxIdCode))? taxIdCode : "ASSENTE";
     }
 }

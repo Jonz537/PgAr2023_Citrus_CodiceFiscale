@@ -21,4 +21,9 @@ public class Main {
     public static String getCitiesByName(String name) {
         return cities.getOrDefault(name, null);
     }
+
+
+    public static boolean isContained(String taxIdCode) {
+        return taxIdCodes.contains(new TaxIdCode(taxIdCode));
+    }
 }

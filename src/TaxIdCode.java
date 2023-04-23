@@ -182,8 +182,13 @@ public class TaxIdCode {
         return code;
     }
 
-    public boolean equals(TaxIdCode object) {
-        return object.code.equals(code);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaxIdCode taxIdCode = (TaxIdCode) o;
+        return Objects.equals(code, taxIdCode.code);
     }
 
     @Override
