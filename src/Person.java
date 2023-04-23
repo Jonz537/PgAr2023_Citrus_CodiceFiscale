@@ -6,31 +6,31 @@ public class Person {
 
     private String name;
     private String surname;
-    private Calendar birthDate; //gaySpawned
+    private Calendar birthdate; //gaySpawned
     private Sex sex;
-    private String city;
+    private String birthCity;
     private String taxIdCode;
 
     public Person(ArrayList<String> personData) {
         this.name = personData.get(0);
         this.surname = personData.get(1);
         this.sex = Sex.valueOf(personData.get(2));
-        this.city = personData.get(3);
+        this.birthCity = personData.get(3);
 
         String[] date = personData.get(4).split("-");
-        this.birthDate = new GregorianCalendar(Integer.parseInt(date[0]),
+        this.birthdate = new GregorianCalendar(Integer.parseInt(date[0]),
                 Integer.parseInt(date[1]) - 1,
                 Integer.parseInt(date[2]));
-        this.taxIdCode = new TaxIdCode(surname, name, birthDate, sex, city).getCode();
+        this.taxIdCode = new TaxIdCode(surname, name, birthdate, sex, birthCity).getCode();
     }
 
-    public Person(String name, String surname, Calendar birthDate, Sex sex, String city) {
+    public Person(String name, String surname, Calendar birthdate, Sex sex, String birthCity) {
         this.name = name;
         this.surname = surname;
-        this.birthDate = birthDate;
+        this.birthdate = birthdate;
         this.sex = sex;
-        this.city = city;
-        this.taxIdCode = new TaxIdCode(surname, name, birthDate, sex, city).getCode();
+        this.birthCity = birthCity;
+        this.taxIdCode = new TaxIdCode(surname, name, birthdate, sex, birthCity).getCode();
     }
 
     public void isContainedInCodes() {
@@ -45,16 +45,16 @@ public class Person {
         return surname;
     }
 
-    public Calendar getBirthDate() {
-        return birthDate;
+    public Calendar getBirthdate() {
+        return birthdate;
     }
 
     public Sex getSex() {
         return sex;
     }
 
-    public String getCity() {
-        return city;
+    public String getBirthCity() {
+        return birthCity;
     }
 
     public String getTaxIdCode() {
@@ -62,7 +62,7 @@ public class Person {
     }
 
     public String getStringDate() {
-        return birthDate.get(Calendar.YEAR)+ "-" + birthDate.get(Calendar.MONTH) + "-" + birthDate.get(Calendar.DAY_OF_MONTH);
+        return birthdate.get(Calendar.YEAR)+ "-" + birthdate.get(Calendar.MONTH) + "-" + birthdate.get(Calendar.DAY_OF_MONTH);
     }
 
     @Override
@@ -70,10 +70,10 @@ public class Person {
         return "Person{" +
                 "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", birthDate=" + birthDate.get(Calendar.WEEK_OF_YEAR) + "/" + birthDate.get(Calendar.MONTH) +
-                "/" + birthDate.get(Calendar.YEAR) +
+                ", birthDate=" + birthdate.get(Calendar.WEEK_OF_YEAR) + "/" + birthdate.get(Calendar.MONTH) +
+                "/" + birthdate.get(Calendar.YEAR) +
                 ", sex=" + sex +
-                ", city='" + city + '\'' +
+                ", city='" + birthCity + '\'' +
                 ", taxIdCode='" + taxIdCode + '\'' +
                 '}';
     }

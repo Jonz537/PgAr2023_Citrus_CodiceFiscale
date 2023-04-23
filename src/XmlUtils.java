@@ -210,7 +210,7 @@ public class XmlUtils {
                 xmlW.writeCharacters("\n\t\t\t");
 
                 xmlW.writeStartElement("comune_nascita");
-                xmlW.writeCharacters(person.getCity());
+                xmlW.writeCharacters(person.getBirthCity());
                 xmlW.writeEndElement();
                 xmlW.writeCharacters("\n\t\t\t");
 

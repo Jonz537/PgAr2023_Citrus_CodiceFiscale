@@ -1,17 +1,15 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class JsonUtils {
 
     private static FileReader fileReader;
+    private static FileWriter fileWriter;
     private static Gson gson;
     private static Type type;
 
@@ -31,7 +29,7 @@ public class JsonUtils {
     }
 
 
-    public static void readCities(HashMap<String, String> cities) {
+    private static void readCities(HashMap<String, String> cities) {
         String filePath = "./Comuni.json";
         initializeJsonReader(filePath);
 
@@ -50,7 +48,7 @@ public class JsonUtils {
         }
     }
 
-    public static void readTaxIdCodes(ArrayList<TaxIdCode> taxIdCodes) {
+    private static void readTaxIdCodes(ArrayList<TaxIdCode> taxIdCodes) {
         String filePath = "./CodiciFiscali.json";
         initializeJsonReader(filePath);
 
@@ -69,16 +67,22 @@ public class JsonUtils {
         }
     }
 
-    public static void readPeople(ArrayList<Person> people) {
+    private static void readPeople(ArrayList<Person> people) {
         String filePath = "./InputPersone.json";
         initializeJsonReader(filePath);
 
-        type = new TypeToken<ArrayList<Person>>(){}.getType();
+        type = new TypeToken<ArrayList<HashMap<String, String>>>(){}.getType();
 
-        ArrayList<Person> listToParse = gson.fromJson(fileReader, type);
+        ArrayList<HashMap<String, String>> listToParse = gson.fromJson(fileReader, type);
 
-        for (Person person: listToParse) {
-            System.out.println(person);
+        for (HashMap<String, String> person: listToParse) {
+            ArrayList<String> personData = new ArrayList<>();
+            personData.add(person.get("nome"));
+            personData.add(person.get("cognome"));
+            personData.add(person.get("sesso"));
+            personData.add(person.get("comune_nascita"));
+            personData.add(person.get("data_nascita"));
+            people.add(new Person(personData));
         }
 
         try {
@@ -88,7 +92,26 @@ public class JsonUtils {
         }
     }
 
-    public static void writeFile(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
+    private static void initializeJsonWriter(String filePath) {
+        try {
+            fileWriter = new FileWriter(filePath);
+            gson = new Gson();
+        } catch (IOException e) {
+            System.out.println("Error: file not found:\n" + e.getMessage());
+        }
+    }
 
+    public static void writeFile(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
+        String filePath = "./Output.json";
+        initializeJsonWriter(filePath);
+
+        gson.toJson(people, fileWriter);
+        gson.toJson(codes, fileWriter);
+
+        try {
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println("Error in closing JSon file reader:\n" + e.getMessage());
+        }
     }
 }

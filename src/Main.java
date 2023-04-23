@@ -24,11 +24,6 @@ public class Main {
             }
             case 1 -> {
                 JsonUtils.readFile(people, taxIdCodes, cities);
-
-                for (Person person: people) {
-                    System.out.println(person);
-                }
-
                 JsonUtils.writeFile(people, taxIdCodes);
             }
             case 2 -> {
