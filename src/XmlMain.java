@@ -10,7 +10,7 @@ public class XmlMain {
         XmlUtils.readTaxIdCodes(taxIdCodes);
         XmlUtils.readPeople(people);
 
-       XmlUtils.writeFileXml(people, taxIdCodes);
+        XmlUtils.writeFileXml(people, taxIdCodes);
 
     }
 }

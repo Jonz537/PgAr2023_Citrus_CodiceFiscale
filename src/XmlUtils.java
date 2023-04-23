@@ -127,32 +127,40 @@ public class XmlUtils {
 
             xmlW.writeStartElement("persone");
             xmlW.writeAttribute("numero", String.valueOf(people.size()));
-            xmlW.writeCharacters("\n\t");
 
             writePeople(people);
 
+            xmlW.writeCharacters("\n\t");
+
             xmlW.writeEndElement();
+            xmlW.writeCharacters("\n\t");
 
             xmlW.writeStartElement("codici");
-
+            xmlW.writeCharacters("\n\t\t");
             xmlW.writeStartElement("invalidi");
-      //      xmlW.writeAttribute("id", );
+
             writeInvalidCodes(codes);
 
+            xmlW.writeCharacters("\n\t\t");
             xmlW.writeEndElement();
+            xmlW.writeCharacters("\n\t\t");
 
             xmlW.writeStartElement("spaiati");
 
-            xmlW.writeEndElement();
+            writeLeftOverCodes(codes);
 
+            xmlW.writeCharacters("\n\t\t");
             xmlW.writeEndElement();
+            xmlW.writeCharacters("\n\t");
+            xmlW.writeEndElement();
+            xmlW.writeCharacters("\n");
 
             xmlW.writeEndElement();
             xmlW.writeEndDocument();
             xmlW.flush();
             xmlW.close();
 
-        } catch (Exception e) {
+        } catch (XMLStreamException | NoSuchElementException e) {
             System.out.println("Reading error:\n" + e.getMessage());
         }
     }
@@ -161,54 +169,53 @@ public class XmlUtils {
      * write the people in the tag 'persone'
      * @param people read in the file InputPersone.xml
      */
-
     private static void writePeople(ArrayList<Person> people) {
 
         try{
             int idCounter = 0;
             for (Person person: people) {
 
+                xmlW.writeCharacters("\n\t\t");
                 xmlW.writeStartElement("persona");
                 xmlW.writeAttribute("id", Integer.toString(idCounter++));
 
-                xmlW.writeCharacters("\n\t\t");
+                xmlW.writeCharacters("\n\t\t\t");
                 xmlW.writeStartElement("nome");
                 xmlW.writeCharacters(person.getName());
                 xmlW.writeEndElement();
-                xmlW.writeCharacters("\n\t\t");
+                xmlW.writeCharacters("\n\t\t\t");
 
                 xmlW.writeStartElement("cognome");
                 xmlW.writeCharacters(person.getSurname());
                 xmlW.writeEndElement();
-                xmlW.writeCharacters("\n\t\t");
+                xmlW.writeCharacters("\n\t\t\t");
 
                 xmlW.writeStartElement("sesso");
                 xmlW.writeCharacters(String.valueOf(person.getSex()));
                 xmlW.writeEndElement();
-                xmlW.writeCharacters("\n\t\t");
+                xmlW.writeCharacters("\n\t\t\t");
 
                 xmlW.writeStartElement("comune_nascita");
                 xmlW.writeCharacters(person.getCity());
                 xmlW.writeEndElement();
-                xmlW.writeCharacters("\n\t\t");
+                xmlW.writeCharacters("\n\t\t\t");
 
                 xmlW.writeStartElement("data_nascita");
                 xmlW.writeCharacters(person.getStringDate());
                 xmlW.writeEndElement();
-                xmlW.writeCharacters("\n\t\t");
+                xmlW.writeCharacters("\n\t\t\t");
 
                 xmlW.writeStartElement("codice_fiscale");
-                xmlW.writeCharacters("\n\t\t\t");
+                xmlW.writeCharacters("\n\t\t\t\t");
                 xmlW.writeCharacters(person.getTaxIdCodeIfValid());
-                xmlW.writeCharacters("\n\t\t");
+                xmlW.writeCharacters("\n\t\t\t");
                 xmlW.writeEndElement();
-                xmlW.writeCharacters("\n\t");
+                xmlW.writeCharacters("\n\t\t");
 
                 xmlW.writeEndElement();
-                xmlW.writeCharacters("\n\t");
             }
 
-        } catch (Exception e) {
+        } catch (XMLStreamException | NoSuchElementException e) {
             System.out.println("Reading error:\n" + e.getMessage());
         }
     }
@@ -217,23 +224,35 @@ public class XmlUtils {
      * write the invalid codes in the tag 'codici'
      * @param codes generated
      */
-
     private static void writeInvalidCodes(ArrayList<TaxIdCode> codes) {
 
         try {
-
             for (TaxIdCode code : codes) {
-
                 if (!code.isValid()) {
-                    continue;
+                    xmlW.writeCharacters("\n\t\t\t");
+                    xmlW.writeStartElement("codice");
+                    xmlW.writeCharacters(code.getCode());
+                    xmlW.writeEndElement();
                 }
-
-                xmlW.writeStartElement("codice");
-                xmlW.writeCharacters(code.getCode());
-                xmlW.writeEndElement();
             }
 
-        } catch (Exception e) {
+        } catch (XMLStreamException | NoSuchElementException e) {
+            System.out.println("Reading error:\n" + e.getMessage());
+        }
+    }
+
+    private static void writeLeftOverCodes(ArrayList<TaxIdCode> codes) {
+        try {
+            for (TaxIdCode code : codes) {
+                if (code.isValid()) {
+                    xmlW.writeCharacters("\n\t\t\t");
+                    xmlW.writeStartElement("codice");
+                    xmlW.writeCharacters(code.getCode());
+                    xmlW.writeEndElement();
+                }
+            }
+
+        } catch (XMLStreamException | NoSuchElementException e) {
             System.out.println("Reading error:\n" + e.getMessage());
         }
     }

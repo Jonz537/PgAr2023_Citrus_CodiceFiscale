@@ -7,6 +7,7 @@ public class Main {
     static private ArrayList<TaxIdCode> taxIdCodes = new ArrayList<>();
     static private HashMap<String, String> cities = new HashMap<>();
 
+
     public static void main(String[] args) {
         XmlMain xmlMain = new XmlMain();
         TaxIdCodeJson taxIdCodeJson = new TaxIdCodeJson();
@@ -24,6 +25,6 @@ public class Main {
 
 
     public static boolean isContained(String taxIdCode) {
-        return taxIdCodes.contains(new TaxIdCode(taxIdCode));
+        return taxIdCodes.remove(new TaxIdCode(taxIdCode));
     }
 }
