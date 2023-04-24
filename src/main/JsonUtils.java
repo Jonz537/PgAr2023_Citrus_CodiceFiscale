@@ -1,5 +1,10 @@
+package main;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import jsonformatter.JsonFormatter;
+import main.Person;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -95,7 +100,7 @@ public class JsonUtils {
     private static void initializeJsonWriter(String filePath) {
         try {
             fileWriter = new FileWriter(filePath);
-            gson = new Gson();
+            gson = new GsonBuilder().setPrettyPrinting().create();
         } catch (IOException e) {
             System.out.println("Error: file not found:\n" + e.getMessage());
         }
@@ -105,8 +110,8 @@ public class JsonUtils {
         String filePath = "./Output.json";
         initializeJsonWriter(filePath);
 
-        gson.toJson(people, fileWriter);
-        gson.toJson(codes, fileWriter);
+        JsonFormatter jsonFormatter = new JsonFormatter(people, codes);
+        gson.toJson(jsonFormatter, fileWriter);
 
         try {
             fileWriter.close();

@@ -1,3 +1,5 @@
+package main;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -34,7 +36,9 @@ public class Person {
     }
 
     public void isContainedInCodes() {
-
+        if (!Main.isContained(taxIdCode)) {
+            taxIdCode = "ASSENTE";
+        }
     }
 
     public String getName() {
@@ -67,7 +71,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "main.Person{" +
                 "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", birthDate=" + birthdate.get(Calendar.WEEK_OF_YEAR) + "/" + birthdate.get(Calendar.MONTH) +

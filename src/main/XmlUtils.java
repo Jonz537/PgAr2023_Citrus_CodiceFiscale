@@ -1,3 +1,8 @@
+package main;
+
+import main.Person;
+import main.TaxIdCode;
+
 import javax.xml.stream.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

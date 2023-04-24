@@ -1,3 +1,5 @@
+package main;
+
 import java.util.*;
 
 public class TaxIdCode {
@@ -192,7 +194,7 @@ public class TaxIdCode {
 
     @Override
     public String toString() {
-        return "TaxIdCode{" +
+        return "main.TaxIdCode{" +
                 "code='" + code + '\'' +
                 '}';
     }
