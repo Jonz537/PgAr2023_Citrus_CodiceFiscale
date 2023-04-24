@@ -137,6 +137,8 @@ public class XmlUtils {
     public static void writeFile(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
 
         String filename = "./Output.xml";
+        int invalidCodes = counterInvalid(codes);
+        int leftOver = counterLeftOver(codes);
 
         initializeWriterFileXml(filename);
 
@@ -157,6 +159,7 @@ public class XmlUtils {
             xmlW.writeStartElement("codici");
             xmlW.writeCharacters("\n\t\t");
             xmlW.writeStartElement("invalidi");
+            xmlW.writeAttribute("numero", String.valueOf(invalidCodes));
 
             writeInvalidCodes(codes);
 
@@ -165,6 +168,7 @@ public class XmlUtils {
             xmlW.writeCharacters("\n\t\t");
 
             xmlW.writeStartElement("spaiati");
+            xmlW.writeAttribute("numero", String.valueOf(leftOver));
 
             writeLeftOverCodes(codes);
 
@@ -265,6 +269,7 @@ public class XmlUtils {
      * @param codes list of coeds
      */
     private static void writeLeftOverCodes(ArrayList<TaxIdCode> codes) {
+
         try {
             for (TaxIdCode code : codes) {
                 if (code.isValid()) {
@@ -278,5 +283,31 @@ public class XmlUtils {
         } catch (XMLStreamException | NoSuchElementException e) {
             System.out.println("Reading error:\n" + e.getMessage());
         }
+    }
+
+    private static int counterInvalid(ArrayList<TaxIdCode> codes) {
+
+        int counter = 0;
+
+        for (TaxIdCode code : codes) {
+            if (!code.isValid()) {
+                counter++;
+            }
+        }
+
+        return counter;
+    }
+
+    private static int counterLeftOver(ArrayList<TaxIdCode> codes) {
+
+        int counter = 0;
+
+        for (TaxIdCode code : codes) {
+            if (code.isValid()) {
+                counter++;
+            }
+        }
+
+        return counter;
     }
 }

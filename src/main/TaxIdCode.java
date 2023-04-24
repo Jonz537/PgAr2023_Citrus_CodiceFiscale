@@ -68,7 +68,7 @@ public class TaxIdCode {
     public TaxIdCode(String surname, String name, Calendar date, Sex sex, String city) {
         StringBuilder generatedCode = new StringBuilder();
         // Adding name and surname chars
-        generatedCode.append(nameChar(surname));
+        generatedCode.append(surnameChar(surname));
         generatedCode.append(nameChar(name));
 
         // Adding birth year and month
@@ -90,25 +90,7 @@ public class TaxIdCode {
         this.code = generatedCode.toString();
     }
 
-    /**
-     * Give the first 3 + 3 characters for the tax ID Code
-     * @param name string with either name or surname
-     * @return The generation of the name/surname of taxIdCode
-     */
-    private String nameChar(String name) {
-        StringBuilder characters = new StringBuilder();
-        name = name.toUpperCase();
-
-        // Adding consonants and returning if length > 3
-        for (int i = 0; i < name.length(); i++) {
-            if (name.substring(i, i + 1).matches("[A-Z&&[^AEIOU]]")) {
-                characters.append(name.charAt(i));
-            }
-            if (characters.length() > 2) {
-                return characters.toString();
-            }
-        }
-
+    private String vowel(StringBuilder characters, String name) {
         // Adding vowels and returning if length > 3
         for (int i = 0; i < name.length(); i++) {
             if (name.substring(i, i + 1).matches("[AEIOU]")) {
@@ -126,6 +108,50 @@ public class TaxIdCode {
 
         return characters.toString();
     }
+
+    /**
+     * Give the first 3 characters for the tax ID Code
+     * @param surname string with either name or surname
+     * @return The generation of the name/surname of taxIdCode
+     */
+    private String surnameChar(String surname) {
+        StringBuilder characters = new StringBuilder();
+        surname = surname.toUpperCase();
+
+        // Adding consonants and returning if length > 3
+        for (int i = 0; i < surname.length(); i++) {
+            if (surname.substring(i, i + 1).matches("[A-Z&&[^AEIOU]]")) {
+                characters.append(surname.charAt(i));
+            }
+            if (characters.length() > 2) {
+                return characters.toString();
+            }
+        }
+
+        return vowel(characters, surname);
+    }
+
+    private String nameChar(String name) {
+        StringBuilder characters = new StringBuilder();
+        name = name.toUpperCase();
+
+        // Adding consonants and returning if length > 3
+        for (int i = 0; i < name.length(); i++) {
+            if (name.substring(i, i + 1).matches("[A-Z&&[^AEIOU]]")) {
+                characters.append(name.charAt(i));
+            }
+            if (characters.length() > 3) {
+                return characters.charAt(0) + characters.substring(2,4);
+            }
+        }
+
+        if (characters.length() > 2) {
+            return characters.toString();
+        }
+
+        return vowel(characters, name);
+    }
+
 
     /**
      * Generate final check character

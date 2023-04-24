@@ -66,7 +66,7 @@ public class Person {
     }
 
     public String getStringDate() {
-        return birthdate.get(Calendar.YEAR)+ "-" + birthdate.get(Calendar.MONTH) + "-" + birthdate.get(Calendar.DAY_OF_MONTH);
+        return birthdate.get(Calendar.YEAR)+ "-" + String.format("%02d", (birthdate.get(Calendar.MONTH) + 1)) + "-" + birthdate.get(Calendar.DAY_OF_MONTH);
     }
 
     @Override
