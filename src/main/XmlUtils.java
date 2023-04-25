@@ -1,8 +1,5 @@
 package main;
 
-import main.Person;
-import main.TaxIdCode;
-
 import javax.xml.stream.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -137,8 +134,6 @@ public class XmlUtils {
     public static void writeFile(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
 
         String filename = "./Output.xml";
-        int invalidCodes = counterInvalid(codes);
-        int leftOver = counterLeftOver(codes);
 
         initializeWriterFileXml(filename);
 
@@ -155,6 +150,9 @@ public class XmlUtils {
 
             xmlW.writeEndElement();
             xmlW.writeCharacters("\n\t");
+
+            int invalidCodes = counterInvalid(codes);
+            int leftOver = counterLeftOver(codes);
 
             xmlW.writeStartElement("codici");
             xmlW.writeCharacters("\n\t\t");

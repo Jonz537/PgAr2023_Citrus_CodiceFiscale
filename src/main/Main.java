@@ -1,9 +1,5 @@
 package main;
 
-import main.JsonUtils;
-import main.Person;
-import main.TaxIdCode;
-import main.XmlUtils;
 import unibs.MenuManager;
 
 import java.util.ArrayList;
@@ -25,6 +21,7 @@ public class Main {
             case 0 -> {
                 XmlUtils.readFile(people, taxIdCodes, cities);
                 XmlUtils.writeFile(people, taxIdCodes);
+
             }
             case 1 -> {
                 JsonUtils.readFile(people, taxIdCodes, cities);
@@ -37,6 +34,7 @@ public class Main {
                 JsonUtils.readFile(people, taxIdCodes, cities);
                 JsonUtils.writeFile(people, taxIdCodes);
             }
+
             default -> System.out.println("Too bad!");
         }
     }

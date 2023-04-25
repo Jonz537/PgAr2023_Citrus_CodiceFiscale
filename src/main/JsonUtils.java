@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import jsonformatter.JsonFormatter;
-import main.Person;
 
 import java.io.*;
 import java.lang.reflect.Type;

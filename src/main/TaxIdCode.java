@@ -203,6 +203,32 @@ public class TaxIdCode {
             return false;
         }
         // Return if valid
+        return (isValidName(code.substring(0, 3)) || isValidName(code.substring(3, 6)));
+    }
+
+    private boolean isValidName(String threeChar) {
+
+        boolean consonantFinished = false, vowelFinished = false;
+        for (int i = 0; i < 3; i++) {
+            // check if consonant are finished
+            if ((!consonantFinished && threeChar.substring(i, i + 1).matches("[AEIOU]"))) {
+                consonantFinished = true;
+            }
+            // check if vowels are finished
+            if ((!vowelFinished && consonantFinished && threeChar.charAt(i) == 'X')) {
+                vowelFinished = true;
+            }
+
+            // if consonant are finished and if we find another consonant (exp: x) the code is invalid
+            if (consonantFinished && threeChar.substring(i, i + 1).matches("[A-Z&&[^AEIOUX]]")) {
+                return false;
+            }
+
+            // if vowel are finished and we find another vowel the code is invalid
+            if (vowelFinished && threeChar.substring(i, i + 1).matches("[AEIOU]")) {
+                return false;
+            }
+        }
         return true;
     }
 
