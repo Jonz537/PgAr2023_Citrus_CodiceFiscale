@@ -16,7 +16,7 @@ public class XmlUtils {
 
     /**
      * Initialize XMLInputFactory and XMLStreamReader
-     * @param filename xml file name
+     * @param filename name of the file xml
      */
     private static void initializeXMLReader(String filename) {
         try {
@@ -27,6 +27,12 @@ public class XmlUtils {
         }
     }
 
+    /**
+     * read cities, taxIdCodes and people from Comuni.xml, CodiciFiscali.xml and InputPersone.xml
+     * @param people read from InputPersone.xml
+     * @param taxIdCodes read from CodiciFiscali.xml
+     * @param cities read from Comuni.xml
+     */
     public static void readFile(ArrayList<Person> people, ArrayList<TaxIdCode> taxIdCodes, HashMap<String, String> cities) {
         readCities(cities);
         readTaxIdCodes(taxIdCodes);
@@ -34,8 +40,8 @@ public class XmlUtils {
     }
 
     /**
-     * read people from the file Inputpersone.xml
-     * @param people list of people to
+     * read people from Inputpersone.xml
+     * @param people save input in this list
      */
     private static void readPeople(ArrayList<Person> people) {
 
@@ -60,7 +66,7 @@ public class XmlUtils {
     }
 
     /**
-     * Initialize XMLOutputFactory and XMLStreamWriter
+     * read taxIdCodes from CodiciFiscali.xml
      * @param taxIdCodes save input in this list
      */
     private static void readTaxIdCodes(ArrayList<TaxIdCode> taxIdCodes) {
@@ -84,7 +90,7 @@ public class XmlUtils {
     }
 
     /**
-     * Initialize XMLOutputFactory and XMLStreamWriter
+     * read cities from Comuni.xml
      * @param cities save input in this list
      */
     private static void readCities(HashMap<String, String> cities) {
@@ -112,8 +118,8 @@ public class XmlUtils {
     }
 
     /**
-     * Initialize XMLOutputFactory and XMLStreamWriter
-     * @param filename save input in this list
+     * Initialize writer file
+     * @param filename name of the file xml
      */
     private static void initializeWriterFileXml(String filename) {
         try {
@@ -129,7 +135,7 @@ public class XmlUtils {
     /**
      * write the final output file on xml
      * @param people read in the file InputPersone.xml
-     * @param codes generated
+     * @param codes read in the file CodiciFiscali.xml
      */
     public static void writeFile(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
 
@@ -243,7 +249,7 @@ public class XmlUtils {
 
     /**
      * write the invalid codes in the tag 'invalidi'
-     * @param codes list of coeds
+     * @param codes list of codes read in CodiciFiscali.xml
      */
     private static void writeInvalidCodes(ArrayList<TaxIdCode> codes) {
 
@@ -263,8 +269,8 @@ public class XmlUtils {
     }
 
     /**
-     * write the leftover codes in the tag  'spaiati'
-     * @param codes list of coeds
+     * write the leftover codes in the tag 'spaiati'
+     * @param codes list of codes read in CodiciFiscali.xml
      */
     private static void writeLeftOverCodes(ArrayList<TaxIdCode> codes) {
 
@@ -283,6 +289,11 @@ public class XmlUtils {
         }
     }
 
+    /**
+     * count invalid codes in this list
+     * @param codes list of codes read in CodiciFiscali.xml
+     * @return how many invalid are in codes list
+     */
     private static int counterInvalid(ArrayList<TaxIdCode> codes) {
 
         int counter = 0;
@@ -296,6 +307,11 @@ public class XmlUtils {
         return counter;
     }
 
+    /**
+     * count left over codes in this list
+     * @param codes list of codes read in CodiciFiscali.xml
+     * @return how many left over are in codes list
+     */
     private static int counterLeftOver(ArrayList<TaxIdCode> codes) {
 
         int counter = 0;

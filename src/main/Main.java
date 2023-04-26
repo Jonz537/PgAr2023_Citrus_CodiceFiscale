@@ -47,10 +47,18 @@ public class Main {
         return cities.getOrDefault(name, null);
     }
 
+    /**
+     * remove taxIdCode if is contained in list of taxIdCode
+     * @param taxIdCode string
+     * @return true if taxIdCode is contained
+     */
     public static boolean isContained(String taxIdCode) {
         return taxIdCodes.remove(new TaxIdCode(taxIdCode));
     }
 
+    /**
+     * removes all the elements from the lists people, taxIdCodes and cities
+     */
     private static void clearAll() {
         people.clear();
         taxIdCodes.clear();

@@ -35,6 +35,9 @@ public class Person {
         this.taxIdCode = new TaxIdCode(surname, name, birthdate, sex, birthCity).getCode();
     }
 
+    /**
+     *  check if taxIdCode is contained in CodiciFiscali
+     */
     public void isContainedInCodes() {
         if (!Main.isContained(taxIdCode)) {
             taxIdCode = "ASSENTE";
@@ -82,6 +85,10 @@ public class Person {
                 '}';
     }
 
+    /**
+     * check if the taxIdCode is valid
+     * @return taxIdCode if is valid however return ASSENTE
+     */
     public String getTaxIdCodeIfValid() {
         return (Main.isContained(taxIdCode))? taxIdCode : "ASSENTE";
     }

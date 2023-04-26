@@ -17,12 +17,22 @@ public class JsonUtils {
     private static Gson gson;
     private static Type type;
 
+    /**
+     * read data from Comuni, CodiciFiscali and InputPersone file json
+     * @param people read from InputPersone
+     * @param taxIdCodes read from CodiciFiscali
+     * @param cities read from Comuni
+     */
     public static void readFile(ArrayList<Person> people, ArrayList<TaxIdCode> taxIdCodes, HashMap<String, String> cities) {
         readCities(cities);
         readTaxIdCodes(taxIdCodes);
         readPeople(people);
     }
 
+    /**
+     * Initialize FileReader and Gson
+     * @param filename json file name
+     */
     private static void initializeJsonReader(String filename) {
         try {
             fileReader = new FileReader(filename);
@@ -32,7 +42,10 @@ public class JsonUtils {
         }
     }
 
-
+    /**
+     * read cities from Comuni.json
+     * @param cities save input in this map
+     */
     private static void readCities(HashMap<String, String> cities) {
         String filePath = "./Comuni.json";
         initializeJsonReader(filePath);
@@ -52,6 +65,10 @@ public class JsonUtils {
         }
     }
 
+    /**
+     * read taxIdCodes from CodiciFiscali.json
+     * @param taxIdCodes save input in this list
+     */
     private static void readTaxIdCodes(ArrayList<TaxIdCode> taxIdCodes) {
         String filePath = "./CodiciFiscali.json";
         initializeJsonReader(filePath);
@@ -71,6 +88,10 @@ public class JsonUtils {
         }
     }
 
+    /**
+     * read people from InputPersone.json
+     * @param people save input in this list
+     */
     private static void readPeople(ArrayList<Person> people) {
         String filePath = "./InputPersone.json";
         initializeJsonReader(filePath);
@@ -96,6 +117,10 @@ public class JsonUtils {
         }
     }
 
+    /**
+     * initialize json writer
+     * @param filePath path of the file
+     */
     private static void initializeJsonWriter(String filePath) {
         try {
             fileWriter = new FileWriter(filePath);
@@ -105,6 +130,11 @@ public class JsonUtils {
         }
     }
 
+    /**
+     * write people and codes in the output.json file
+     * @param people read in InputPersone.json
+     * @param codes read in CodiciFiscali.json
+     */
     public static void writeFile(ArrayList<Person> people, ArrayList<TaxIdCode> codes) {
         String filePath = "./Output.json";
         initializeJsonWriter(filePath);

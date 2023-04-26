@@ -90,6 +90,12 @@ public class TaxIdCode {
         this.code = generatedCode.toString();
     }
 
+    /**
+     * add vowel and if initial string isn't enough add X
+     * @param characters used for taxIdCode
+     * @param name of the person
+     * @return 3 characters for taxIdCode
+     */
     private String vowel(StringBuilder characters, String name) {
         // Adding vowels and returning if length > 3
         for (int i = 0; i < name.length(); i++) {
@@ -131,6 +137,11 @@ public class TaxIdCode {
         return vowel(characters, surname);
     }
 
+    /**
+     * Generate the 3 characters for the tax ID Code
+     * @param name string
+     * @return the generation of the name of taxIdCode
+     */
     private String nameChar(String name) {
         StringBuilder characters = new StringBuilder();
         name = name.toUpperCase();
@@ -206,6 +217,11 @@ public class TaxIdCode {
         return (isValidName(code.substring(0, 3)) || isValidName(code.substring(3, 6)));
     }
 
+    /**
+     * check if the name in InputPersone is valid
+     * @param threeChar
+     * @return true if the name is valid else false
+     */
     private boolean isValidName(String threeChar) {
 
         boolean consonantFinished = false, vowelFinished = false;
@@ -236,6 +252,11 @@ public class TaxIdCode {
         return code;
     }
 
+    /**
+     *
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
